@@ -109,7 +109,7 @@ BOOL MyDlg::OnInitDialog()
 
 	// TODO: добавьте дополнительную инициализацию
 
-	auto FillCombo = [](CComboBox& target) {target.AddString(L"Игрок"); target.AddString(L"MinMax"); target.AddString(L"Нейросеть"); target.SetCurSel(1); };
+	auto FillCombo = [](CComboBox& target) {target.AddString(L"Игрок"); /*target.AddString(L"MinMax");*/ target.AddString(L"Нейросеть"); target.SetCurSel(1); };
 	FillCombo(ComboPlayer1);
 	FillCombo(ComboPlayer2);
 

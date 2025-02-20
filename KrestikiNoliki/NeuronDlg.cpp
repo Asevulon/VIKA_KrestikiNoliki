@@ -47,6 +47,7 @@ void NeuronDlg::OnBnClickedOk()
 	// TODO: добавьте свой код обработчика уведомлений
 	if (!t.Init())
 	{
+		t.reset();
 		t.Fill();
 	}
 	timerid = SetTimer(123, 500, NULL);

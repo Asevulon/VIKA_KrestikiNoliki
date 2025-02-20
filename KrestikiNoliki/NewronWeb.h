@@ -47,10 +47,10 @@ class Trainer
 {
 private:
 	vector<NeuronWeb> population;
-	const int PopulationSize = 200;
+	const int PopulationSize = 500;
 	vector<int>NWStructure = { 9,9,32,16,9 };
 
-	int MaxTrainCycles = 500;
+	int MaxTrainCycles = 1500;
 	int GameTries = 20;
 
 	const CString outDir = L"Saves\\";
@@ -73,4 +73,6 @@ public:
 	NeuronWeb GetBestNeuronWeb();
 	bool Init();
 	float GetProgress();
+	void reset();
+	void update();
 };

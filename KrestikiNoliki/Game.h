@@ -405,7 +405,14 @@ public:
 
 
 
-class NeuronWebPlayer : public MinMax {
+class NeuronWebPlayer : public Player {
+private:
+	MinMax mm;
+	NeuronPlayer np;
+	Player* rp = nullptr;
+	int cap = 500;
 public:
-	void SetNW(NeuronWeb& nw) {};
+	void SetNW(NeuronWeb& nw);
+	void DoTurn(TurnResponse& resp);
+	void Delay(int val);
 };

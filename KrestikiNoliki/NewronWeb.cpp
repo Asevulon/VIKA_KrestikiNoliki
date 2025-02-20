@@ -146,12 +146,15 @@ int NeuronWeb::Move(vector<int>& input)
 	auto& layer = layers.back();
 	for (int i = 0; i < 9; i++)
 	{
+		if (input[i] == 0)
+		{
 			cur = layer[i].out;
 			if (cur > best)
 			{
 				best = cur;
 				LastMove = i;
 			}
+		}
 	}
 
 	return LastMove;
@@ -403,8 +406,10 @@ void Trainer::Train()
 		}
 	}
 
+	sort(population.begin(), population.end(), [](const NeuronWeb& a, const NeuronWeb& b) {return a.score > b.score; });
 	BestNW = population.front();
 	SaveBest();
+	update();
 }
 
 void Trainer::Fill()
@@ -456,4 +461,23 @@ bool Trainer::Init()
 float Trainer::GetProgress()
 {
 	return float(progress)/float(MaxTrainCycles) * 100.;
+}
+
+void Trainer::reset()
+{
+	ofstream ofstr(bestDir + L"itr");
+	ofstr << 0;
+	ofstr.close();
+}
+
+void Trainer::update()
+{
+	ifstream in(bestDir + L"itr");
+	int ctr = 0;
+	in >> ctr;
+	in.close();
+	ctr += MaxTrainCycles;
+	ofstream out(bestDir + L"itr");
+	out << ctr;
+	out.close();
 }
