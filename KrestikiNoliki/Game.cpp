@@ -128,6 +128,7 @@ void Game::P1Turn()
 	{
 		turn = !turn;
 		empty--;
+		lastPos = resp.pos;
 	}
 	else manualturn = true;
 }
@@ -155,6 +156,7 @@ void Game::P2Turn()
 	{
 		turn = !turn;
 		empty--;
+		lastPos = resp.pos;
 	}
 	else manualturn = true;
 }
@@ -254,6 +256,11 @@ void Game::Score()
 	Score(p2);
 }
 
+int Game::GetLastTurn()
+{
+	return lastPos;
+}
+
 void Game::manP2Turn(int pos)
 {
 	field[pos] = -1;
@@ -301,7 +308,21 @@ void MinMax::DoTurn(TurnResponse& resp)
 		if (data[i] == 0) zeroes++;
 	}
 	minmax(data, zeroes, 1, true, 0);
+	resp.pos = minmaxres();
 	data[minmaxres()] = 1;
+	resp.success = true;
+}
+
+void MinMax::Advice(TurnResponse& resp)
+{
+	auto& data = *resp.field;
+	int zeroes = 0;
+	for (int i = 0; i < 9; i++)
+	{
+		if (data[i] == 0) zeroes++;
+	}
+	minmax(data, zeroes, 1, true, 0);
+	resp.pos = minmaxres();
 	resp.success = true;
 }
 
@@ -317,6 +338,7 @@ void NeuronPlayer::DoTurn(TurnResponse& resp)
 	if (data[pos] != 0)resp.forbidden = true;
 	else data[pos] = 1;
 	resp.success = true;
+	resp.pos = pos;
 }
 
 void NeuronPlayer::Delay(int val)
@@ -329,7 +351,25 @@ void NeuronPlayer::SetNW(NeuronWeb& p)
 	nw = p;
 }
 
+void MatrixFormPlayer::SetMatrixForm(MatrixForm& MF)
+{
+	mf = MF;
+}
 
+void MatrixFormPlayer::Delay(int val)
+{
+	Sleep(val);
+}
+
+void MatrixFormPlayer::DoTurn(TurnResponse& resp)
+{
+	auto& data = *resp.field;
+	int pos = mf.Move(data);
+	if (data[pos] != 0)resp.forbidden = true;
+	else data[pos] = 1;
+	resp.success = true;
+	resp.pos = pos;
+}
 
 
 
@@ -508,3 +548,18 @@ void NeuronWebPlayer::Delay(int val)
 {
 	rp->Delay(val);
 }
+
+void MatrixFormOroPlayer::SetMatrixForm(MatrixForm& MF)
+{
+}
+
+void MatrixFormOroPlayer::DoTurn(TurnResponse& resp)
+{
+	mm.DoTurn(resp);
+}
+
+void MatrixFormOroPlayer::Delay(int val)
+{
+	mm.Delay(val);
+}
+

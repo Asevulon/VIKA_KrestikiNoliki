@@ -36,6 +36,8 @@ BEGIN_MESSAGE_MAP(NeuronDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &NeuronDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &NeuronDlg::OnBnClickedButton2)
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BUTTON3, &NeuronDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &NeuronDlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -100,4 +102,22 @@ void NeuronDlg::OnTimer(UINT_PTR nIDEvent)
 	str.Format(L"Прогресс %.2f%%", t.GetProgress());
 	progtext.SetWindowTextW(str);
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void NeuronDlg::OnBnClickedButton3()
+{
+	// TODO: добавьте свой код обработчика уведомлений
+	timerid = SetTimer(123, 500, NULL);
+	thread TrainThread([&]() {t.TrainORO(); KillTimer(timerid); PostMessageW(TRAIN_DONE); });
+	TrainThread.detach();
+}
+
+
+void NeuronDlg::OnBnClickedButton4()
+{
+	// TODO: добавьте свой код обработчика уведомлений
+	timerid = SetTimer(123, 500, NULL);
+	thread TrainThread([&]() {t.TrainORO(true); KillTimer(timerid); PostMessageW(TRAIN_DONE); });
+	TrainThread.detach();
 }

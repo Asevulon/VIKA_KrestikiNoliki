@@ -188,6 +188,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameDlg.h" />
     <ClInclude Include="KrestikiNoliki.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="MinMax.h" />
     <ClInclude Include="MyDlg.h" />
     <ClInclude Include="NeuronDlg.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameDlg.cpp" />
     <ClCompile Include="KrestikiNoliki.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="MinMax.cpp" />
     <ClCompile Include="MyDlg.cpp" />
     <ClCompile Include="NeuronDlg.cpp" />

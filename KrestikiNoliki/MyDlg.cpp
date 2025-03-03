@@ -109,9 +109,10 @@ BOOL MyDlg::OnInitDialog()
 
 	// TODO: добавьте дополнительную инициализацию
 
-	auto FillCombo = [](CComboBox& target) {target.AddString(L"Игрок"); /*target.AddString(L"MinMax");*/ target.AddString(L"Нейросеть"); target.SetCurSel(1); };
+	auto FillCombo = [](CComboBox& target) {target.AddString(L"Игрок"); target.AddString(L"OРO"); target.AddString(L"Нейросеть"); target.SetCurSel(1); };
 	FillCombo(ComboPlayer1);
 	FillCombo(ComboPlayer2);
+
 
 	return TRUE;  // возврат значения TRUE, если фокус не передан элементу управления
 }
@@ -174,7 +175,9 @@ void MyDlg::OnBnClickedOk()
 	auto GetPlayer = [](CComboBox& source, CString& path) -> Player* {
 		CString str; source.GetWindowTextW(str);
 		if (str == L"Игрок")return new Human();
-		else if (str == L"MinMax")return new MinMax();
+		else if (str == L"OРO")
+			if (path.IsEmpty())return nullptr;
+			else { MatrixForm mf; mf.Load(path); MatrixFormOroPlayer* p = new MatrixFormOroPlayer; p->SetMatrixForm(mf); return p; }
 		else if (str == L"Нейросеть")
 			if (path.IsEmpty())return nullptr;
 			else { NeuronWeb nw; nw.Load(path); NeuronWebPlayer* p = new NeuronWebPlayer; p->SetNW(nw); return p; }
@@ -218,10 +221,11 @@ void MyDlg::OnBnClickedButton2()
 	// TODO: добавьте свой код обработчика уведомлений
 	CFileDialog fileDialog(
 		TRUE,  // TRUE for Open dialog
-		L".nw", // Default extension
+		L".*", // Default extension
 		NULL,  // Initial file name (none)
 		OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, // Flags
-		L"NW Files (*.nw)|*.nw||" // Filter
+		//L"NW Files (*.nw)|*.nw||" // Filter
+		L""
 	);
 	fileDialog.m_ofn.lpstrInitialDir = L"C:\\Users\\asevu\\source\\repos\\KrestikiNoliki\\KrestikiNoliki\\Best";
 

@@ -412,6 +412,64 @@ void Trainer::Train()
 	update();
 }
 
+void Trainer::TrainORO(bool ContinueTraining)
+{
+	studyBase.clear();
+
+	population.clear();
+
+	MatrixForm student;
+	if (ContinueTraining)student.Load(bestDir + L"Best.MatrixForm");
+	else student.Fill(NWStructure);
+
+	auto Inverse = [](vector<int>& data) {for (auto& item : data)item *= -1; };
+
+	for (int i = 0; i < MaxTrainCycles; i++) 
+	{
+		progress = i;
+
+		MatrixFormPlayer p1;
+		p1.SetMatrixForm(student);
+
+		MatrixFormPlayer p2;
+		p2.SetMatrixForm(student);
+
+		MinMax mm;
+
+		Game game;
+		game.SetPlayers(&p1, &p2);
+		game.SetDelay(0);
+		game.Start();
+
+		bool turn = true;
+
+		do
+		{
+			turn = game.GetTurn();
+
+			OptTurn ot;
+			ot.first = game.GetField();
+			if (!turn)Inverse(ot.first);
+
+			TurnResponse tr(&ot.first);
+			mm.Advice(tr);
+			ot.second = tr.pos;
+
+			studyBase.insert(ot);
+
+			if (turn)game.P1Turn();
+			else game.P2Turn();
+
+		} while (!game.GameEnd());
+
+		for (auto lesson : studyBase)student.ORO(lesson);
+	}
+
+	wofstream out(bestDir + L"Best.MatrixForm");
+	out << (LPCTSTR)student.ToString();
+	out.close();
+}
+
 void Trainer::Fill()
 {
 	srand(time(NULL));
@@ -480,4 +538,234 @@ void Trainer::update()
 	ofstream out(bestDir + L"itr");
 	out << ctr;
 	out.close();
+}
+
+MatrixForm::MatrixForm()
+{
+
+}
+
+MatrixForm::MatrixForm(const NeuronWeb& source)
+{
+	Structure = source.Structure;
+
+	W.resize(Structure.size() - 1);
+	Fi.resize(Structure.size() - 1);
+	Out.resize(Structure.size() - 1);
+
+	for (int i = 1; i < Structure.size(); i++)
+	{
+		W[i - 1].Resize(Structure[i], Structure[i - 1]);
+		Fi[i - 1].Resize(Structure[i], 1);
+	}
+
+	for (int i = 0; i < W.size(); i++)
+	{
+		auto& Wi = W[i];
+		auto& Fii = Fi[i];
+		auto& layer = source.layers[i];
+
+		for (int j = 0; j < layer.size(); j++)
+		{
+			auto& n = layer[j];
+
+			for (int k = 0; k < n.w.size(); k++)
+			{
+				Wi(j, k) = n.w[k];
+			}
+
+			Fii(j, 1) = n.fi;
+		}
+	}
+}
+
+void MatrixForm::Fill(vector<int>& pStructure)
+{
+	srand(time(NULL));
+
+	Structure = pStructure;
+
+	W.resize(Structure.size() - 1);
+	Fi.resize(Structure.size() - 1);
+	Out.resize(Structure.size() - 1);
+
+	for (int i = 1; i < Structure.size(); ++i)
+	{
+		W[i - 1].Resize(Structure[i], Structure[i - 1]);
+		Fi[i - 1].Resize(Structure[i], 1);
+		Out[i - 1].Resize(Structure[i], 1);
+	}
+
+	for (auto& w : W)w.apply([](double) {return rand(-0.5, 0.5); });
+	for (auto& w : Fi)w.apply([](double) {return rand(-0.5, 0.5); });
+}
+
+void MatrixForm::Calculate(vector<int>& input)
+{
+	Out[0] = (W[0] * Matrix2d(input).Transpose() + Fi[0]).Transform([](double val) {return max(0, val); });
+
+	for (int i = 1; i < W.size() - 1; i++)
+	{
+		Out[i] = (W[i] * Out[i - 1] + Fi[i]).Transform([](double val) {return max(0, val); });
+	}
+
+	int id = W.size() - 1;
+	Out[id] = (W[id] * Out[id - 1] + Fi[id]).Transform([](double val) {return exp(val); });
+
+	double summ = Out[id].fold(0, [](double acc, double val) {return acc + val; });
+	Out[id].apply([summ](double val) {return val / summ; });
+}
+
+int MatrixForm::Move(vector<int>& board)
+{
+	double best = -1;
+	double cur = 0;
+	Calculate(board);
+	auto& layer = Out.back();
+	for (int i = 0; i < 9; i++)
+	{
+		if (board[i] == 0)
+		{
+			cur = layer(i,0);
+			if (cur > best)
+			{
+				best = cur;
+				LastMove = i;
+			}
+		}
+	}
+
+	return LastMove;
+}
+
+void MatrixForm::ORO(OptTurn& ot)
+{
+	Matrix2d t;
+	t.Resize(Structure.back(), 1);
+	t(ot.second, 0) = 1;
+
+	Calculate(ot.first);
+
+	auto& y = Out.back();
+
+	auto dldy = y - t;
+	
+	double diff = dldy.fold(0, [](double acc, double elem) {return acc + elem * elem; });
+	if (diff < Accuracy)return;
+	
+	int size = W.size() - 1;
+
+	auto dldw4 = dldy * (Out[size - 1].Transpose()) ;
+
+	auto dldb4 = dldy;
+
+	auto dldh = W[size].Transpose() * dldy;
+
+	vector<Matrix2d>dw;
+	dw.resize(size);
+	vector<Matrix2d>db;
+	db.resize(size);
+
+	Matrix2d dldz;
+
+	for (int i = size - 1; i >= 1; i--)
+	{
+		dldz = dldh.HadamardProduct(Out[i].Transform([](double val) {return (val > 0) ? 1 : 0; }));
+		dw[i] = dldz * (Out[i - 1].Transpose());
+		db[i] = dldz;
+		dldh = W[i].Transpose() * dldz;
+	}
+
+	dldz = dldh.HadamardProduct(Out[0].Transform([](double val) {return (val > 0) ? 1 : 0; }));
+	dw[0] = (Matrix2d(ot.first).Transpose()) * (dldz.Transpose());
+	db[0] = dldz;
+
+	W[size] = W[size] - (dldw4 * etta);
+	Fi[size] = Fi[size] - (dldb4 * etta);
+
+	for (int i = 0; i < size - 1; i++)
+	{
+		W[i] = W[i] - (dw[i] * etta);
+		Fi[i] = Fi[i] - (db[i] * etta);
+	}
+}
+
+CString MatrixForm::ToString()
+{
+	CString res = L"";
+	CString temp;
+
+	res.Format(L"%d\n", Structure.size());
+	for (auto& layer : Structure)
+	{
+		temp.Format(L"%d ", layer);
+		res += temp;
+	}
+	res += L"\n";
+
+	for (auto& w : W)
+	{
+		res += w.ToStringData();
+	}
+	for (auto& fi : Fi)
+	{
+		res += fi.ToStringData();
+	}
+	return res;
+}
+
+void MatrixForm::Load(CString& source)
+{
+	ifstream ifstr(source);
+
+	int StructureSize = 0;
+	ifstr >> StructureSize;
+	Structure.resize(StructureSize);
+
+	for (int i = 0; i < StructureSize; i++)
+	{
+		int LayerSize = 0;
+		ifstr >> LayerSize;
+		Structure[i] = LayerSize;
+	}
+
+	W.resize(StructureSize - 1);
+	Fi.resize(StructureSize - 1);
+	Out.resize(StructureSize - 1);
+
+	for (int i = 1; i < StructureSize; i++)
+	{
+		int rows = Structure[i];
+		int cols = Structure[i - 1];
+		W[i - 1].Resize(rows, cols);
+
+		double w = 0;
+		for (int j = 0; j < rows; j++)
+		{
+			for (int k = 0; k < cols; k++)
+			{
+				ifstr >> w;
+				W[i - 1](j, k) = w;
+			}
+		}
+	}
+
+	for (int i = 1; i < StructureSize; i++)
+	{
+		int rows = Structure[i];
+		int cols = 1;
+		Fi[i - 1].Resize(rows, cols);
+
+		double fi = 0;
+		for (int j = 0; j < rows; j++)
+		{
+			for (int k = 0; k < cols; k++)
+			{
+				ifstr >> fi;
+				Fi[i - 1](j, k) = fi;
+			}
+		}
+	}
+
+	ifstr.close();
 }

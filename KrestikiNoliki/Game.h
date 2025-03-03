@@ -14,6 +14,7 @@ struct TurnResponse {
 	vector<int>*field = nullptr;
 	bool success = false;
 	bool forbidden = false;
+	int pos = 0;
 	TurnResponse(vector<int>* field) :field(field) {};
 	TurnResponse(vector<int>* field, bool success) :field(field), success(success) {};
 };
@@ -44,6 +45,7 @@ private:
 protected:
 public:
 	void DoTurn(TurnResponse& resp);
+	void Advice(TurnResponse& resp);
 	void Delay(int val);
 };
 
@@ -53,6 +55,16 @@ private:
 protected:
 public:
 	void SetNW(NeuronWeb& p);
+	void DoTurn(TurnResponse& resp);
+	void Delay(int val);
+};
+
+class MatrixFormPlayer : public Player {
+private:
+	MatrixForm mf;
+protected:
+public:
+	void SetMatrixForm(MatrixForm& mf);
 	void DoTurn(TurnResponse& resp);
 	void Delay(int val);
 };
@@ -73,6 +85,8 @@ private:
 	bool manualturn = false;
 
 	int delay = 0;
+
+	int lastPos = 0;
 
 	const double winnerscore = 1;
 	const double loserscore = 0;
@@ -102,6 +116,7 @@ public:
 	bool ManualTurn();
 	void Autogame();
 	void Score();
+	int GetLastTurn();
 };
 
 
@@ -413,6 +428,16 @@ private:
 	int cap = 500;
 public:
 	void SetNW(NeuronWeb& nw);
+	void DoTurn(TurnResponse& resp);
+	void Delay(int val);
+};
+
+class MatrixFormOroPlayer : public Player {
+private:
+	MinMax mm;
+	MatrixForm mf;
+public:
+	void SetMatrixForm(MatrixForm& MF);
 	void DoTurn(TurnResponse& resp);
 	void Delay(int val);
 };
