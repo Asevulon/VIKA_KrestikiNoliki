@@ -78,9 +78,9 @@ class Trainer
 private:
 	vector<NeuronWeb> population;
 	const int PopulationSize = 500;
-	vector<int>NWStructure = { 9,30,9 };
+	vector<int>NWStructure = { 9,36,18,9 };
 
-	int MaxTrainCycles = 500;
+	int MaxTrainCycles = 2500;
 	int GameTries = 20;
 
 	const CString outDir = L"Saves\\";
@@ -91,11 +91,21 @@ private:
 	int progress = 0;
 	const int TournamentParticipants = 5;
 	std::set<OptTurn> studyBase;
+	int studyBaseSize = 0;
 protected:
 	NeuronWeb NewNW();
 	void PlayGame(NeuronWeb& p1, NeuronWeb& p2, int Tries);
 	void SaveBest();
 	void Tournament();
+	void InitStudyBase();
+	OptTurn rotate90(const OptTurn& optTurn);
+	OptTurn rotate180(const OptTurn& optTurn);
+	OptTurn rotate270(const OptTurn& optTurn);
+	OptTurn reflectHorizontal(const OptTurn& optTurn);
+	OptTurn reflectVertical(const OptTurn& optTurn);
+	OptTurn reflectMainDiagonal(const OptTurn& optTurn);
+	OptTurn reflectAntiDiagonal(const OptTurn& optTurn);
+	void AddInitBase(OptTurn& initBase);
 public:
 	void Train();
 	void TrainORO(bool ContinueTraining = false);
@@ -107,4 +117,5 @@ public:
 	float GetProgress();
 	void reset();
 	void update();
+	int size();
 };

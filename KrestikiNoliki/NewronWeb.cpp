@@ -357,6 +357,263 @@ void Trainer::Tournament()
 	}
 }
 
+void Trainer::InitStudyBase()
+{
+	studyBase.clear();
+
+	set<OptTurn>initBase;
+	initBase.insert(OptTurn({ 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 4));  // Пустая доска, ход в центр
+	initBase.insert(OptTurn({ -1, 0, 0, 0, 1, 0, 0, 0, 0 }, 2));  // Крестик в центре, нолик в клетке 1, ход в клетку 3
+	initBase.insert(OptTurn({ 0, 0, -1, 0, 1, 0, 0, 0, 0 }, 0));  // Крестик в центре, нолик в клетке 3, ход в клетку 1
+	initBase.insert(OptTurn({ 0, 0, 0, 0, 1, 0, -1, 0, 0 }, 2));  // Крестик в центре, нолик в клетке 7, ход в клетку 3
+	initBase.insert(OptTurn({ 0, 0, 0, 0, 1, 0, 0, 0, -1 }, 0));  // Крестик в центре, нолик в клетке 9, ход в клетку 1
+	initBase.insert(OptTurn({ 1, 0, 0, 0, -1, 0, 0, 0, 0 }, 2));  // Крестик в клетке 1, нолик в центре, ход в клетку 3
+	initBase.insert(OptTurn({ 0, 0, 1, 0, -1, 0, 0, 0, 0 }, 0));  // Крестик в клетке 3, нолик в центре, ход в клетку 1
+	initBase.insert(OptTurn({ 0, 0, 0, 0, -1, 0, 1, 0, 0 }, 2));  // Крестик в клетке 7, нолик в центре, ход в клетку 3
+	initBase.insert(OptTurn({ 0, 0, 0, 0, -1, 0, 0, 0, 1 }, 0));  // Крестик в клетке 9, нолик в центре, ход в клетку 1
+	initBase.insert(OptTurn({ 1, 0, -1, 0, 0, 0, 0, 0, 0 }, 4));  // Крестик в клетке 1, нолик в клетке 3, ход в центр
+	initBase.insert(OptTurn({ 1, 0, 0, 0, 0, 0, -1, 0, 0 }, 4));  // Крестик в клетке 1, нолик в клетке 7, ход в центр
+	initBase.insert(OptTurn({ 1, 0, 0, 0, 0, 0, 0, 0, -1 }, 4));  // Крестик в клетке 1, нолик в клетке 9, ход в центр
+	initBase.insert(OptTurn({ -1, 0, 1, 0, 0, 0, 0, 0, 0 }, 4));  // Крестик в клетке 3, нолик в клетке 1, ход в центр
+	initBase.insert(OptTurn({ 0, 0, 1, 0, 0, 0, -1, 0, 0 }, 4));  // Крестик в клетке 3, нолик в клетке 7, ход в центр
+	initBase.insert(OptTurn({ 0, 0, 1, 0, 0, 0, 0, 0, -1 }, 4));  // Крестик в клетке 3, нолик в клетке 9, ход в центр
+	initBase.insert(OptTurn({ -1, 0, 0, 0, 0, 0, 1, 0, 0 }, 4));  // Крестик в клетке 7, нолик в клетке 1, ход в центр
+	initBase.insert(OptTurn({ 0, 0, -1, 0, 0, 0, 1, 0, 0 }, 4));  // Крестик в клетке 7, нолик в клетке 3, ход в центр
+	initBase.insert(OptTurn({ 0, 0, 0, 0, 0, 0, 1, 0, -1 }, 4));  // Крестик в клетке 7, нолик в клетке 9, ход в центр
+	initBase.insert(OptTurn({ -1, 0, 0, 0, 0, 0, 0, 0, 1 }, 4));  // Крестик в клетке 9, нолик в клетке 1, ход в центр
+	initBase.insert(OptTurn({ 0, 0, -1, 0, 0, 0, 0, 0, 1 }, 4));  // Крестик в клетке 9, нолик в клетке 3, ход в центр
+	initBase.insert(OptTurn({ 0, 0, 0, 0, 0, 0, -1, 0, 1 }, 4));  // Крестик в клетке 9, нолик в клетке 7, ход в центр
+	initBase.insert(OptTurn({ 1, 0, 1, 0, -1, 0, 0, 0, 0 }, 6));  // Крестик в клетке 1 и 3, нолик в центре, ход в клетку 7
+	initBase.insert(OptTurn({ 1, 0, 0, 0, -1, 0, 1, 0, 0 }, 2));  // Крестик в клетке 1 и 7, нолик в центре, ход в клетку 3
+	initBase.insert(OptTurn({ 0, 0, 1, 0, -1, 0, 1, 0, 0 }, 0));  // Крестик в клетке 3 и 7, нолик в центре, ход в клетку 1
+	initBase.insert(OptTurn({ 1, 0, 0, 0, -1, 0, 0, 0, 1 }, 2));  // Крестик в клетке 1 и 9, нолик в центре, ход в клетку 3
+
+	auto ReflectSummary = [&](set<OptTurn>& data, const OptTurn& optTurn)
+		{
+			auto temp = reflectHorizontal(optTurn);
+			data.insert(temp);
+
+			temp = reflectVertical(optTurn);
+			data.insert(temp);
+
+			temp = reflectMainDiagonal(optTurn);
+			data.insert(temp);
+
+			temp = reflectAntiDiagonal(optTurn);
+			data.insert(temp);
+		};
+	
+	for (auto& optTurn : initBase)
+	{
+		studyBase.insert(optTurn);
+
+		auto temp = rotate90(optTurn);
+		studyBase.insert(temp);
+		ReflectSummary(studyBase, temp);
+
+		temp = rotate180(optTurn);
+		studyBase.insert(temp);
+		ReflectSummary(studyBase, temp);
+	
+		temp = rotate270(optTurn);
+		studyBase.insert(temp);
+		ReflectSummary(studyBase, temp);
+	}
+}
+
+OptTurn Trainer::rotate90(const OptTurn& optTurn)
+{
+	const auto& board = optTurn.first;
+	int move = optTurn.second;
+
+	std::vector<int> newBoard(9);
+	newBoard[0] = board[6];
+	newBoard[1] = board[3];
+	newBoard[2] = board[0];
+	newBoard[3] = board[7];
+	newBoard[4] = board[4];
+	newBoard[5] = board[1];
+	newBoard[6] = board[8];
+	newBoard[7] = board[5];
+	newBoard[8] = board[2];
+
+	// Преобразуем ход
+	std::vector<int> rotationMap = { 6, 3, 0, 7, 4, 1, 8, 5, 2 };
+	int newMove = rotationMap[move];
+
+	return { newBoard, newMove };
+}
+
+OptTurn Trainer::rotate180(const OptTurn& optTurn)
+{
+	const auto& board = optTurn.first;
+	int move = optTurn.second;
+
+	std::vector<int> newBoard(9);
+	newBoard[0] = board[8];
+	newBoard[1] = board[7];
+	newBoard[2] = board[6];
+	newBoard[3] = board[5];
+	newBoard[4] = board[4];
+	newBoard[5] = board[3];
+	newBoard[6] = board[2];
+	newBoard[7] = board[1];
+	newBoard[8] = board[0];
+
+	// Преобразуем ход
+	std::vector<int> rotationMap = { 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+	int newMove = rotationMap[move];
+
+	return { newBoard, newMove };
+}
+
+OptTurn Trainer::rotate270(const OptTurn& optTurn)
+{
+	const auto& board = optTurn.first;
+	int move = optTurn.second;
+
+	std::vector<int> newBoard(9);
+	newBoard[0] = board[2];
+	newBoard[1] = board[5];
+	newBoard[2] = board[8];
+	newBoard[3] = board[1];
+	newBoard[4] = board[4];
+	newBoard[5] = board[7];
+	newBoard[6] = board[0];
+	newBoard[7] = board[3];
+	newBoard[8] = board[6];
+
+	// Преобразуем ход
+	std::vector<int> rotationMap = { 2, 5, 8, 1, 4, 7, 0, 3, 6 };
+	int newMove = rotationMap[move];
+
+	return { newBoard, newMove };
+}
+
+OptTurn Trainer::reflectHorizontal(const OptTurn& optTurn)
+{
+	const auto& board = optTurn.first;
+	int move = optTurn.second;
+
+	std::vector<int> newBoard(9);
+	newBoard[0] = board[6];
+	newBoard[1] = board[7];
+	newBoard[2] = board[8];
+	newBoard[3] = board[3];
+	newBoard[4] = board[4];
+	newBoard[5] = board[5];
+	newBoard[6] = board[0];
+	newBoard[7] = board[1];
+	newBoard[8] = board[2];
+
+	// Преобразуем ход
+	std::vector<int> reflectionMap = { 6, 7, 8, 3, 4, 5, 0, 1, 2 };
+	int newMove = reflectionMap[move];
+
+	return { newBoard, newMove };
+}
+
+OptTurn Trainer::reflectVertical(const OptTurn& optTurn)
+{
+	const auto& board = optTurn.first;
+	int move = optTurn.second;
+
+	std::vector<int> newBoard(9);
+	newBoard[0] = board[2];
+	newBoard[1] = board[1];
+	newBoard[2] = board[0];
+	newBoard[3] = board[5];
+	newBoard[4] = board[4];
+	newBoard[5] = board[3];
+	newBoard[6] = board[8];
+	newBoard[7] = board[7];
+	newBoard[8] = board[6];
+
+	// Преобразуем ход
+	std::vector<int> reflectionMap = { 2, 1, 0, 5, 4, 3, 8, 7, 6 };
+	int newMove = reflectionMap[move];
+
+	return { newBoard, newMove };
+}
+
+OptTurn Trainer::reflectMainDiagonal(const OptTurn& optTurn)
+{
+	const auto& board = optTurn.first;
+	int move = optTurn.second;
+
+	std::vector<int> newBoard(9);
+	newBoard[0] = board[0];
+	newBoard[1] = board[3];
+	newBoard[2] = board[6];
+	newBoard[3] = board[1];
+	newBoard[4] = board[4];
+	newBoard[5] = board[7];
+	newBoard[6] = board[2];
+	newBoard[7] = board[5];
+	newBoard[8] = board[8];
+
+	// Преобразуем ход
+	std::vector<int> reflectionMap = { 0, 3, 6, 1, 4, 7, 2, 5, 8 };
+	int newMove = reflectionMap[move];
+
+	return { newBoard, newMove };
+}
+
+OptTurn Trainer::reflectAntiDiagonal(const OptTurn& optTurn)
+{
+	const auto& board = optTurn.first;
+	int move = optTurn.second;
+
+	std::vector<int> newBoard(9);
+	newBoard[0] = board[8];
+	newBoard[1] = board[5];
+	newBoard[2] = board[2];
+	newBoard[3] = board[7];
+	newBoard[4] = board[4];
+	newBoard[5] = board[1];
+	newBoard[6] = board[6];
+	newBoard[7] = board[3];
+	newBoard[8] = board[0];
+
+	// Преобразуем ход
+	std::vector<int> reflectionMap = { 8, 5, 2, 7, 4, 1, 6, 3, 0 };
+	int newMove = reflectionMap[move];
+
+	return { newBoard, newMove };
+}
+
+void Trainer::AddInitBase(OptTurn& optTurn)
+{
+	auto ReflectSummary = [&](set<OptTurn>& data, const OptTurn& optTurn)
+		{
+			auto temp = reflectHorizontal(optTurn);
+			data.insert(temp);
+
+			temp = reflectVertical(optTurn);
+			data.insert(temp);
+
+			temp = reflectMainDiagonal(optTurn);
+			data.insert(temp);
+
+			temp = reflectAntiDiagonal(optTurn);
+			data.insert(temp);
+		};
+
+		studyBase.insert(optTurn);
+
+		auto temp = rotate90(optTurn);
+		studyBase.insert(temp);
+		ReflectSummary(studyBase, temp);
+
+		temp = rotate180(optTurn);
+		studyBase.insert(temp);
+		ReflectSummary(studyBase, temp);
+
+		temp = rotate270(optTurn);
+		studyBase.insert(temp);
+		ReflectSummary(studyBase, temp);
+}
+
 void Trainer::Train()
 {
 	int SavedPopulation = PopulationSize / 2;
@@ -414,7 +671,7 @@ void Trainer::Train()
 
 void Trainer::TrainORO(bool ContinueTraining)
 {
-	studyBase.clear();
+	InitStudyBase();
 
 	population.clear();
 
@@ -427,17 +684,18 @@ void Trainer::TrainORO(bool ContinueTraining)
 	for (int i = 0; i < MaxTrainCycles; i++) 
 	{
 		progress = i;
-
+		studyBaseSize = studyBase.size();
 		MatrixFormPlayer p1;
 		p1.SetMatrixForm(student);
 
-		MatrixFormPlayer p2;
-		p2.SetMatrixForm(student);
+		RandomPlayer p2;
 
 		MinMax mm;
 
 		Game game;
-		game.SetPlayers(&p1, &p2);
+		if(rand(0,1) < 0.5)game.SetPlayers(&p1, &p2);
+		else game.SetPlayers(&p2, &p1);
+
 		game.SetDelay(0);
 		game.Start();
 
@@ -455,7 +713,8 @@ void Trainer::TrainORO(bool ContinueTraining)
 			mm.Advice(tr);
 			ot.second = tr.pos;
 
-			studyBase.insert(ot);
+			//studyBase.insert(ot);
+			AddInitBase(ot);
 
 			if (turn)game.P1Turn();
 			else game.P2Turn();
@@ -538,6 +797,11 @@ void Trainer::update()
 	ofstream out(bestDir + L"itr");
 	out << ctr;
 	out.close();
+}
+
+int Trainer::size()
+{
+	return studyBaseSize;
 }
 
 MatrixForm::MatrixForm()
@@ -677,7 +941,7 @@ void MatrixForm::ORO(OptTurn& ot)
 	}
 
 	dldz = dldh.HadamardProduct(Out[0].Transform([](double val) {return (val > 0) ? 1 : 0; }));
-	dw[0] = (Matrix2d(ot.first).Transpose()) * (dldz.Transpose());
+	dw[0] = (dldz)*(Matrix2d(ot.first));
 	db[0] = dldz;
 
 	W[size] = W[size] - (dldw4 * etta);

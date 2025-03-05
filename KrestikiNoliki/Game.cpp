@@ -371,6 +371,23 @@ void MatrixFormPlayer::DoTurn(TurnResponse& resp)
 	resp.pos = pos;
 }
 
+void RandomPlayer::DoTurn(TurnResponse& resp)
+{
+	auto& data = *resp.field;
+	vector<int>empty;
+	for (int i = 0; i < 9; i++)if (data[i] == 0)empty.push_back(i);
+	int pos = empty[(empty.size() - 1e-14) * (double)rand()/(double)RAND_MAX];
+	if (data[pos] != 0)abort();
+	else data[pos] = 1;
+	resp.success = true;
+	resp.pos = pos;
+
+}
+void RandomPlayer::Delay(int val)
+{
+	Sleep(val);
+}
+
 
 
 

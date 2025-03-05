@@ -68,6 +68,12 @@ public:
 	void DoTurn(TurnResponse& resp);
 	void Delay(int val);
 };
+
+class RandomPlayer :public Player {
+public:
+	void DoTurn(TurnResponse& resp);
+	void Delay(int val);
+};
 class Game
 {
 private:
