@@ -58,8 +58,7 @@ private:
 	vector<int>Structure;
 
 	int LastMove = 0;
-	double etta = 0.1;
-	double Accuracy = 1e-4;
+	double Accuracy = 1e-6;
 	typedef double (*ActivationFunctionType)(double);
 protected:
 public:
@@ -71,6 +70,9 @@ public:
 	void ORO(OptTurn& ot);
 	CString ToString();
 	void Load(CString& source);
+
+	double etta = .005;
+	double currentError = 0;
 };
 
 class Trainer
@@ -78,9 +80,9 @@ class Trainer
 private:
 	vector<NeuronWeb> population;
 	const int PopulationSize = 500;
-	vector<int>NWStructure = { 9,36,18,9 };
+	vector<int>NWStructure = { 9,72,36,18,9 };
 
-	int MaxTrainCycles = 2500;
+	int MaxTrainCycles = 500;
 	int GameTries = 20;
 
 	const CString outDir = L"Saves\\";
@@ -92,6 +94,7 @@ private:
 	const int TournamentParticipants = 5;
 	std::set<OptTurn> studyBase;
 	int studyBaseSize = 0;
+	double error = 0;
 protected:
 	NeuronWeb NewNW();
 	void PlayGame(NeuronWeb& p1, NeuronWeb& p2, int Tries);
@@ -118,4 +121,5 @@ public:
 	void reset();
 	void update();
 	int size();
+	double Error();
 };

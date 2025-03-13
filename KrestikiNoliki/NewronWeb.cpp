@@ -1,4 +1,4 @@
-#include "pch.h"
+п»ї#include "pch.h"
 #include "NewronWeb.h"
 #include "Game.h"
 double rand(double left, double right)
@@ -233,9 +233,9 @@ void NeuronWeb::ReplaceWithChildOf(const NeuronWeb& p1, const NeuronWeb& p2)
 {
 	for (int i = 0; i < layers.size(); i++)
 	{
-		auto& layer = layers[i];		//без индекса локальный
-		auto& layer1 = p1.layers[i];	//с индексом 1 - от первого родителя
-		auto& layer2 = p2.layers[i];	//с индексом 2 - от второго родителя
+		auto& layer = layers[i];		//Р±РµР· РёРЅРґРµРєСЃР° Р»РѕРєР°Р»СЊРЅС‹Р№
+		auto& layer1 = p1.layers[i];	//СЃ РёРЅРґРµРєСЃРѕРј 1 - РѕС‚ РїРµСЂРІРѕРіРѕ СЂРѕРґРёС‚РµР»СЏ
+		auto& layer2 = p2.layers[i];	//СЃ РёРЅРґРµРєСЃРѕРј 2 - РѕС‚ РІС‚РѕСЂРѕРіРѕ СЂРѕРґРёС‚РµР»СЏ
 		for (int j = 0; j < layer.size(); j++)
 		{
 			auto& n = layer[j];
@@ -362,31 +362,83 @@ void Trainer::InitStudyBase()
 	studyBase.clear();
 
 	set<OptTurn>initBase;
-	initBase.insert(OptTurn({ 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 4));  // Пустая доска, ход в центр
-	initBase.insert(OptTurn({ -1, 0, 0, 0, 1, 0, 0, 0, 0 }, 2));  // Крестик в центре, нолик в клетке 1, ход в клетку 3
-	initBase.insert(OptTurn({ 0, 0, -1, 0, 1, 0, 0, 0, 0 }, 0));  // Крестик в центре, нолик в клетке 3, ход в клетку 1
-	initBase.insert(OptTurn({ 0, 0, 0, 0, 1, 0, -1, 0, 0 }, 2));  // Крестик в центре, нолик в клетке 7, ход в клетку 3
-	initBase.insert(OptTurn({ 0, 0, 0, 0, 1, 0, 0, 0, -1 }, 0));  // Крестик в центре, нолик в клетке 9, ход в клетку 1
-	initBase.insert(OptTurn({ 1, 0, 0, 0, -1, 0, 0, 0, 0 }, 2));  // Крестик в клетке 1, нолик в центре, ход в клетку 3
-	initBase.insert(OptTurn({ 0, 0, 1, 0, -1, 0, 0, 0, 0 }, 0));  // Крестик в клетке 3, нолик в центре, ход в клетку 1
-	initBase.insert(OptTurn({ 0, 0, 0, 0, -1, 0, 1, 0, 0 }, 2));  // Крестик в клетке 7, нолик в центре, ход в клетку 3
-	initBase.insert(OptTurn({ 0, 0, 0, 0, -1, 0, 0, 0, 1 }, 0));  // Крестик в клетке 9, нолик в центре, ход в клетку 1
-	initBase.insert(OptTurn({ 1, 0, -1, 0, 0, 0, 0, 0, 0 }, 4));  // Крестик в клетке 1, нолик в клетке 3, ход в центр
-	initBase.insert(OptTurn({ 1, 0, 0, 0, 0, 0, -1, 0, 0 }, 4));  // Крестик в клетке 1, нолик в клетке 7, ход в центр
-	initBase.insert(OptTurn({ 1, 0, 0, 0, 0, 0, 0, 0, -1 }, 4));  // Крестик в клетке 1, нолик в клетке 9, ход в центр
-	initBase.insert(OptTurn({ -1, 0, 1, 0, 0, 0, 0, 0, 0 }, 4));  // Крестик в клетке 3, нолик в клетке 1, ход в центр
-	initBase.insert(OptTurn({ 0, 0, 1, 0, 0, 0, -1, 0, 0 }, 4));  // Крестик в клетке 3, нолик в клетке 7, ход в центр
-	initBase.insert(OptTurn({ 0, 0, 1, 0, 0, 0, 0, 0, -1 }, 4));  // Крестик в клетке 3, нолик в клетке 9, ход в центр
-	initBase.insert(OptTurn({ -1, 0, 0, 0, 0, 0, 1, 0, 0 }, 4));  // Крестик в клетке 7, нолик в клетке 1, ход в центр
-	initBase.insert(OptTurn({ 0, 0, -1, 0, 0, 0, 1, 0, 0 }, 4));  // Крестик в клетке 7, нолик в клетке 3, ход в центр
-	initBase.insert(OptTurn({ 0, 0, 0, 0, 0, 0, 1, 0, -1 }, 4));  // Крестик в клетке 7, нолик в клетке 9, ход в центр
-	initBase.insert(OptTurn({ -1, 0, 0, 0, 0, 0, 0, 0, 1 }, 4));  // Крестик в клетке 9, нолик в клетке 1, ход в центр
-	initBase.insert(OptTurn({ 0, 0, -1, 0, 0, 0, 0, 0, 1 }, 4));  // Крестик в клетке 9, нолик в клетке 3, ход в центр
-	initBase.insert(OptTurn({ 0, 0, 0, 0, 0, 0, -1, 0, 1 }, 4));  // Крестик в клетке 9, нолик в клетке 7, ход в центр
-	initBase.insert(OptTurn({ 1, 0, 1, 0, -1, 0, 0, 0, 0 }, 6));  // Крестик в клетке 1 и 3, нолик в центре, ход в клетку 7
-	initBase.insert(OptTurn({ 1, 0, 0, 0, -1, 0, 1, 0, 0 }, 2));  // Крестик в клетке 1 и 7, нолик в центре, ход в клетку 3
-	initBase.insert(OptTurn({ 0, 0, 1, 0, -1, 0, 1, 0, 0 }, 0));  // Крестик в клетке 3 и 7, нолик в центре, ход в клетку 1
-	initBase.insert(OptTurn({ 1, 0, 0, 0, -1, 0, 0, 0, 1 }, 2));  // Крестик в клетке 1 и 9, нолик в центре, ход в клетку 3
+
+	initBase.insert(OptTurn({ 0,0,0,0,0,0,0,0,0 }, 4));
+	initBase.insert(OptTurn({ -1,0,0,0,1,0,0,0,0 }, 2));
+	initBase.insert(OptTurn({ 1,-1,1,-1,1,0,0,0,-1 }, 6));
+	initBase.insert(OptTurn({ 1,1,0,-1,1,0,0,-1,-1 }, 2));
+	initBase.insert(OptTurn({ 1,0,1,-1,1,0,-1,0,-1 }, 1));
+
+initBase.insert(OptTurn({ 0,0,0,0,-1,0,0,0,0 }, 0));
+initBase.insert(OptTurn({ -1,0,0,0,-1,0,0,0,1 }, 6));
+initBase.insert(OptTurn({ -1,1,0,0,-1,-1,1,-1,1 }, 3));
+initBase.insert(OptTurn({ -1,1,0,-1,-1,0,1,-1,1 }, 5));
+initBase.insert(OptTurn({ -1,0,0,0,-1,0,1,-1,1 }, 1));
+initBase.insert(OptTurn({ 0,0,0,  0,-1,0,  -1,0,0 }, 2));
+initBase.insert(OptTurn({ 0,0,-1,  0,-1,0,  0,0,1 }, 6));
+initBase.insert(OptTurn({ 1,0,1,  -1,-1,0,  -1,0,0 }, 1));
+initBase.insert(OptTurn({ 0,0,0,  0,0,0,  0,0,-1 }, 4));
+initBase.insert(OptTurn({ 0,0,0,  0,1,0,  -1,-1,0 }, 8));
+initBase.insert(OptTurn({ -1,0,0,  -1,1,0,  0,0,0 }, 6));
+initBase.insert(OptTurn({ -1,0,0,  0,1,0,  -1,-1,1 }, 3));
+initBase.insert(OptTurn({ -1,-1,0,  1,1,0,  -1,-1,1 }, 5));
+initBase.insert(OptTurn({ 0,0,-1,  0,1,0,  -1,-1,1 }, 0));
+initBase.insert(OptTurn({ 0,-1,-1,  0,1,0,  0,0,0 }, 0));
+initBase.insert(OptTurn({ -1,0,-1,  -1,1,0,  1,0,0 }, 1));
+initBase.insert(OptTurn({ -1,0,0,  0,1,0,  -1,-1,1 }, 3));
+initBase.insert(OptTurn({ 0,-1,0,  0,-1,0,  0,0,1 }, 7));
+initBase.insert(OptTurn({ 0,-1,0,  0,-1,0,  1,1,-1 }, 0));
+initBase.insert(OptTurn({ -1,0,-1,  0,-1,0,  1,0,1 }, 7));
+initBase.insert(OptTurn({ -1,0,0,  -1,-1,0,  1,0,1 }, 7));
+initBase.insert(OptTurn({ 0,0,0,  1,-1,-1,  -1,0,1 }, 2));
+initBase.insert(OptTurn({ 0,1,0,  0,-1,-1,  0,-1,1 }, 3));
+initBase.insert(OptTurn({ 0,-1,0,  0,-1,-1,  0,1,1 }, 6));
+initBase.insert(OptTurn({ 0,-1,0,  -1,-1,0,  0,1,1 }, 6));
+initBase.insert(OptTurn({ -1,-1,0,  0,-1,0,  0,1,1 }, 6));
+initBase.insert(OptTurn({ 0,0,-1,  -1,-1,0,  1,0,1 }, 7));
+initBase.insert(OptTurn({ 0,0,0,  0,-1,-1,  0,0,1 }, 3));
+initBase.insert(OptTurn({ -1,0,0,  0,1,0,  -1,-1,1 }, 3));
+initBase.insert(OptTurn({ -1,0,-1,  -1,1,0,  1,0,0 }, 1));
+initBase.insert(OptTurn({ 0,-1,0,  0,0,0,  0,0,1 }, 4));
+initBase.insert(OptTurn({ 0,-1,-1,  0,1,0,  0,0,0 }, 0));
+initBase.insert(OptTurn({ -1,0,0,  0,1,-1,  0,0,0 }, 2));
+initBase.insert(OptTurn({ -1,0,0,  0,1,0,  0,0,-1 }, 1));
+initBase.insert(OptTurn({ -1,0,0,  -1,1,1,  0,0,-1 }, 6));
+initBase.insert(OptTurn({ -1,0,-1,  -1,1,1,  1,0,-1 }, 1));
+initBase.insert(OptTurn({ -1,0,0,  -1,1,0,  0,1,-1 }, 1));
+initBase.insert(OptTurn({ -1,0,-1,  0,1,0,  1,-1,0 }, 1));
+initBase.insert(OptTurn({ -1,-1,0,  1,1,-1,  -1,1,0 }, 2));
+initBase.insert(OptTurn({ -1,0,0,  -1,1,0,  1,-1,0 }, 2));
+initBase.insert(OptTurn({ -1,0,-1,  0,1,0,  0,0,0 }, 1));
+initBase.insert(OptTurn({ 0,0,0,  0,1,-1,  0,0,-1 }, 2));
+initBase.insert(OptTurn({ 0,-1,1,  -1,1,0,  0,-1,0 }, 6));
+initBase.insert(OptTurn({ 0,0,0,  -1,1,0,  0,-1,0 }, 6));
+initBase.insert(OptTurn({ -1,-1,0,  1,1,-1,  -1,0,1 }, 2));
+initBase.insert(OptTurn({ 0,-1,1,  0,1,-1,  0,-1,0 }, 6));
+initBase.insert(OptTurn({ 1,-1,1,  -1,1,-1,  -1,0,0 }, 8));
+initBase.insert(OptTurn({ -1,-1,1,  0,1,0,  -1,-1,1 }, 5));
+initBase.insert(OptTurn({ -1,0,-1,  -1,1,1,  0,1,-1 }, 1));
+initBase.insert(OptTurn({ -1,1,-1,  0,1,0,  0,-1,0 }, 5));
+initBase.insert(OptTurn({ 1,-1,0,  -1,1,0,  0,0,-1 }, 2));
+
+for (auto& item : initBase)
+{
+	if (item.first[item.second] != 0)
+	{
+		abort();
+	}
+}
+
+for (auto& firstItem : initBase)
+{
+	for (auto& secondItem : initBase)
+	{
+		if ((firstItem.first == secondItem.first) && (firstItem.second != secondItem.second))
+		{
+			abort();
+		}
+	}
+}
 
 	auto ReflectSummary = [&](set<OptTurn>& data, const OptTurn& optTurn)
 		{
@@ -406,8 +458,16 @@ void Trainer::InitStudyBase()
 	for (auto& optTurn : initBase)
 	{
 		studyBase.insert(optTurn);
+		studyBase.insert(rotate90(optTurn));
+		studyBase.insert(rotate180(optTurn));
+		studyBase.insert(rotate270(optTurn));
 
-		auto temp = rotate90(optTurn);
+		studyBase.insert(reflectHorizontal(optTurn));
+		studyBase.insert(reflectVertical(optTurn));
+		studyBase.insert(reflectMainDiagonal(optTurn));
+		studyBase.insert(reflectAntiDiagonal(optTurn));
+
+		/*auto temp = rotate90(optTurn);
 		studyBase.insert(temp);
 		ReflectSummary(studyBase, temp);
 
@@ -417,7 +477,15 @@ void Trainer::InitStudyBase()
 	
 		temp = rotate270(optTurn);
 		studyBase.insert(temp);
-		ReflectSummary(studyBase, temp);
+		ReflectSummary(studyBase, temp);*/
+	}
+
+	for (auto& item : studyBase)
+	{
+		if (item.first[item.second] != 0)
+		{
+			abort();
+		}
 	}
 }
 
@@ -437,10 +505,14 @@ OptTurn Trainer::rotate90(const OptTurn& optTurn)
 	newBoard[7] = board[5];
 	newBoard[8] = board[2];
 
-	// Преобразуем ход
-	std::vector<int> rotationMap = { 6, 3, 0, 7, 4, 1, 8, 5, 2 };
+	// РџСЂРµРѕР±СЂР°Р·СѓРµРј С…РѕРґ
+	std::vector<int> rotationMap = { 2, 5, 8, 1, 4, 7, 0, 3, 6 };
 	int newMove = rotationMap[move];
 
+	if (newBoard[newMove] != 0)
+	{
+		abort();
+	}
 	return { newBoard, newMove };
 }
 
@@ -460,9 +532,14 @@ OptTurn Trainer::rotate180(const OptTurn& optTurn)
 	newBoard[7] = board[1];
 	newBoard[8] = board[0];
 
-	// Преобразуем ход
+	// РџСЂРµРѕР±СЂР°Р·СѓРµРј С…РѕРґ
 	std::vector<int> rotationMap = { 8, 7, 6, 5, 4, 3, 2, 1, 0 };
 	int newMove = rotationMap[move];
+
+	if (newBoard[newMove] != 0)
+	{
+		abort();
+	}
 
 	return { newBoard, newMove };
 }
@@ -483,9 +560,14 @@ OptTurn Trainer::rotate270(const OptTurn& optTurn)
 	newBoard[7] = board[3];
 	newBoard[8] = board[6];
 
-	// Преобразуем ход
-	std::vector<int> rotationMap = { 2, 5, 8, 1, 4, 7, 0, 3, 6 };
+	// РџСЂРµРѕР±СЂР°Р·СѓРµРј С…РѕРґ
+	std::vector<int> rotationMap = { 6, 3, 0, 7, 4, 1, 8, 5, 2 };
 	int newMove = rotationMap[move];
+
+	if (newBoard[newMove] != 0)
+	{
+		abort();
+	}
 
 	return { newBoard, newMove };
 }
@@ -506,9 +588,14 @@ OptTurn Trainer::reflectHorizontal(const OptTurn& optTurn)
 	newBoard[7] = board[1];
 	newBoard[8] = board[2];
 
-	// Преобразуем ход
+	// РџСЂРµРѕР±СЂР°Р·СѓРµРј С…РѕРґ
 	std::vector<int> reflectionMap = { 6, 7, 8, 3, 4, 5, 0, 1, 2 };
 	int newMove = reflectionMap[move];
+
+	if (newBoard[newMove] != 0)
+	{
+		abort();
+	}
 
 	return { newBoard, newMove };
 }
@@ -529,9 +616,14 @@ OptTurn Trainer::reflectVertical(const OptTurn& optTurn)
 	newBoard[7] = board[7];
 	newBoard[8] = board[6];
 
-	// Преобразуем ход
+	// РџСЂРµРѕР±СЂР°Р·СѓРµРј С…РѕРґ
 	std::vector<int> reflectionMap = { 2, 1, 0, 5, 4, 3, 8, 7, 6 };
 	int newMove = reflectionMap[move];
+
+	if (newBoard[newMove] != 0)
+	{
+		abort();
+	}
 
 	return { newBoard, newMove };
 }
@@ -552,9 +644,14 @@ OptTurn Trainer::reflectMainDiagonal(const OptTurn& optTurn)
 	newBoard[7] = board[5];
 	newBoard[8] = board[8];
 
-	// Преобразуем ход
+	// РџСЂРµРѕР±СЂР°Р·СѓРµРј С…РѕРґ
 	std::vector<int> reflectionMap = { 0, 3, 6, 1, 4, 7, 2, 5, 8 };
 	int newMove = reflectionMap[move];
+
+	if (newBoard[newMove] != 0)
+	{
+		abort();
+	}
 
 	return { newBoard, newMove };
 }
@@ -575,9 +672,14 @@ OptTurn Trainer::reflectAntiDiagonal(const OptTurn& optTurn)
 	newBoard[7] = board[3];
 	newBoard[8] = board[0];
 
-	// Преобразуем ход
+	// РџСЂРµРѕР±СЂР°Р·СѓРµРј С…РѕРґ
 	std::vector<int> reflectionMap = { 8, 5, 2, 7, 4, 1, 6, 3, 0 };
 	int newMove = reflectionMap[move];
+
+	if (newBoard[newMove] != 0)
+	{
+		abort();
+	}
 
 	return { newBoard, newMove };
 }
@@ -680,48 +782,59 @@ void Trainer::TrainORO(bool ContinueTraining)
 	else student.Fill(NWStructure);
 
 	auto Inverse = [](vector<int>& data) {for (auto& item : data)item *= -1; };
+	double localError = 0;
 
 	for (int i = 0; i < MaxTrainCycles; i++) 
 	{
 		progress = i;
 		studyBaseSize = studyBase.size();
-		MatrixFormPlayer p1;
-		p1.SetMatrixForm(student);
+		//MatrixFormPlayer p1;
+		//p1.SetMatrixForm(student);
 
-		RandomPlayer p2;
+		//RandomPlayer p2;
 
-		MinMax mm;
+		//MinMax mm;
 
-		Game game;
-		if(rand(0,1) < 0.5)game.SetPlayers(&p1, &p2);
-		else game.SetPlayers(&p2, &p1);
+		//Game game;
+		//if(rand(0,1) < 0.5)game.SetPlayers(&p1, &p2);
+		//else game.SetPlayers(&p2, &p1);
 
-		game.SetDelay(0);
-		game.Start();
+		//game.SetDelay(0);
+		//game.Start();
 
-		bool turn = true;
+		//bool turn = true;
 
-		do
+		//do
+		//{
+		//	turn = game.GetTurn();
+
+		//	OptTurn ot;
+		//	ot.first = game.GetField();
+		//	if (!turn)Inverse(ot.first);
+
+		//	TurnResponse tr(&ot.first);
+		//	mm.Advice(tr);
+		//	ot.second = tr.pos;
+
+		//	//studyBase.insert(ot);
+		//	AddInitBase(ot);
+
+		//	if (turn)game.P1Turn();
+		//	else game.P2Turn();
+
+		//} while (!game.GameEnd());
+		localError = 0;
+		for (auto lesson : studyBase)
 		{
-			turn = game.GetTurn();
+			student.ORO(lesson);
+			localError += student.currentError;
+		}
+		
+		localError /= studyBase.size();
+		error = localError;
 
-			OptTurn ot;
-			ot.first = game.GetField();
-			if (!turn)Inverse(ot.first);
-
-			TurnResponse tr(&ot.first);
-			mm.Advice(tr);
-			ot.second = tr.pos;
-
-			//studyBase.insert(ot);
-			AddInitBase(ot);
-
-			if (turn)game.P1Turn();
-			else game.P2Turn();
-
-		} while (!game.GameEnd());
-
-		for (auto lesson : studyBase)student.ORO(lesson);
+		//student.etta *= 0.995;
+		if (error <= 1e-4)break;
 	}
 
 	wofstream out(bestDir + L"Best.MatrixForm");
@@ -802,6 +915,11 @@ void Trainer::update()
 int Trainer::size()
 {
 	return studyBaseSize;
+}
+
+double Trainer::Error()
+{
+	return error;
 }
 
 MatrixForm::MatrixForm()
@@ -904,53 +1022,62 @@ int MatrixForm::Move(vector<int>& board)
 
 void MatrixForm::ORO(OptTurn& ot)
 {
-	Matrix2d t;
-	t.Resize(Structure.back(), 1);
-	t(ot.second, 0) = 1;
+	// РџСЂСЏРјРѕРµ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅРµРЅРёРµ (Forward Pass)
+	vector<Matrix2d> z(W.size());
+	vector<Matrix2d> a(W.size());
 
-	Calculate(ot.first);
+	// Р’С…РѕРґРЅРѕР№ СЃР»РѕР№
+	Matrix2d input_vector(ot.first); // Р¤РѕСЂРјР° (9, 1)
+	a[0] = input_vector.Transpose(); // (1, 9) РґР»СЏ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚Рё СЃ РјР°С‚СЂРёС†Р°РјРё РІРµСЃРѕРІ
 
-	auto& y = Out.back();
-
-	auto dldy = y - t;
-	
-	double diff = dldy.fold(0, [](double acc, double elem) {return acc + elem * elem; });
-	if (diff < Accuracy)return;
-	
-	int size = W.size() - 1;
-
-	auto dldw4 = dldy * (Out[size - 1].Transpose()) ;
-
-	auto dldb4 = dldy;
-
-	auto dldh = W[size].Transpose() * dldy;
-
-	vector<Matrix2d>dw;
-	dw.resize(size);
-	vector<Matrix2d>db;
-	db.resize(size);
-
-	Matrix2d dldz;
-
-	for (int i = size - 1; i >= 1; i--)
-	{
-		dldz = dldh.HadamardProduct(Out[i].Transform([](double val) {return (val > 0) ? 1 : 0; }));
-		dw[i] = dldz * (Out[i - 1].Transpose());
-		db[i] = dldz;
-		dldh = W[i].Transpose() * dldz;
+	// РЎРєСЂС‹С‚С‹Рµ СЃР»РѕРё СЃ ReLU
+	for (int i = 0; i < W.size() - 1; ++i) {
+		z[i] = W[i] * a[i] + Fi[i]; // (Structure[i+1], 1)
+		a[i + 1] = z[i].Transform([](double val) { return max(0.0, val); }); // ReLU
 	}
 
-	dldz = dldh.HadamardProduct(Out[0].Transform([](double val) {return (val > 0) ? 1 : 0; }));
-	dw[0] = (dldz)*(Matrix2d(ot.first));
-	db[0] = dldz;
+	// Р’С‹С…РѕРґРЅРѕР№ СЃР»РѕР№ СЃ Softmax
+	int last = W.size() - 1;
+	z[last] = W[last] * a[last] + Fi[last];
+	Matrix2d exp_z = z[last].Transform([](double val) { return exp(val); });
+	double sum = exp_z.fold(0.0, [](double acc, double val) { return acc + val; });
+	Matrix2d y = exp_z * (1.0 / sum); // Softmax
 
-	W[size] = W[size] - (dldw4 * etta);
-	Fi[size] = Fi[size] - (dldb4 * etta);
+	// Р¦РµР»РµРІРѕР№ РІРµРєС‚РѕСЂ (one-hot encoding РїСЂР°РІРёР»СЊРЅРѕРіРѕ С…РѕРґР°)
+	Matrix2d t(9, 1, 0.0);
+	t(ot.second, 0) = 1.0;
 
-	for (int i = 0; i < size - 1; i++)
-	{
-		W[i] = W[i] - (dw[i] * etta);
-		Fi[i] = Fi[i] - (db[i] * etta);
+	// Р’С‹С‡РёСЃР»РµРЅРёРµ РѕС€РёР±РєРё (РєСЂРѕСЃСЃ-СЌРЅС‚СЂРѕРїРёСЏ)
+	//currentError = -t.HadamardProduct(y.Transform([](double val) { return log(val + 1e-8); })).fold(0.0, [](double acc, double val) { return acc + val; });
+
+	// РћР±СЂР°С‚РЅРѕРµ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅРµРЅРёРµ (Backward Pass)
+	vector<Matrix2d> delta(W.size());
+	vector<Matrix2d> dW(W.size());
+	vector<Matrix2d> dFi(W.size());
+
+	// Р“СЂР°РґРёРµРЅС‚ РґР»СЏ РІС‹С…РѕРґРЅРѕРіРѕ СЃР»РѕСЏ (Softmax + РєСЂРѕСЃСЃ-СЌРЅС‚СЂРѕРїРёСЏ)
+	delta[last] = y - t;
+
+	currentError = delta[last].Transform([](double val) {return val * val; }).fold(0, [](double acc, double elem) {return acc + elem; });
+	if (currentError < Accuracy)return;
+	// РћР±РЅРѕРІР»РµРЅРёРµ РіСЂР°РґРёРµРЅС‚РѕРІ РґР»СЏ РІС‹С…РѕРґРЅРѕРіРѕ СЃР»РѕСЏ
+	dW[last] = delta[last] * a[last].Transpose();
+	dFi[last] = delta[last];
+
+	// Р Р°СЃРїСЂРѕСЃС‚СЂР°РЅРµРЅРёРµ РіСЂР°РґРёРµРЅС‚РѕРІ С‡РµСЂРµР· СЃРєСЂС‹С‚С‹Рµ СЃР»РѕРё
+	for (int i = last - 1; i >= 0; --i) {
+		// РџСЂРѕРёР·РІРѕРґРЅР°СЏ ReLU: 1 РµСЃР»Рё z[i] > 0, РёРЅР°С‡Рµ 0
+		Matrix2d relu_deriv = z[i].Transform([](double val) { return val > 0 ? 1.0 : 0.0; });
+
+		delta[i] = (W[i + 1].Transpose() * delta[i + 1]).HadamardProduct(relu_deriv);
+		dW[i] = delta[i] * a[i].Transpose();
+		dFi[i] = delta[i];
+	}
+
+	// РћР±РЅРѕРІР»РµРЅРёРµ РІРµСЃРѕРІ Рё СЃРјРµС‰РµРЅРёР№ СЃ СѓС‡РµС‚РѕРј СЃРєРѕСЂРѕСЃС‚Рё РѕР±СѓС‡РµРЅРёСЏ (etta)
+	for (size_t i = 0; i < W.size(); ++i) {
+		W[i] = W[i] - dW[i] * etta;
+		Fi[i] = Fi[i] - dFi[i] * etta;
 	}
 }
 

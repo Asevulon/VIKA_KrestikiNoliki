@@ -37,6 +37,9 @@ public:
 	Matrix2d& apply(OneArgFuncType predicate);
 	CString ToString(CString label = L"");
 	CString ToStringData();
+
+	int GetRows();
+	int GetColumns();
 };
 
 

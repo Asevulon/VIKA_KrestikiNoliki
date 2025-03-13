@@ -175,9 +175,10 @@ void MyDlg::OnBnClickedOk()
 	auto GetPlayer = [](CComboBox& source, CString& path) -> Player* {
 		CString str; source.GetWindowTextW(str);
 		if (str == L"Игрок")return new Human();
-		else if (str == L"OРO")
-			if (path.IsEmpty())return nullptr;
-			else { MatrixForm mf; mf.Load(path); MatrixFormOroPlayer* p = new MatrixFormOroPlayer; p->SetMatrixForm(mf); return p; }
+		else if (str == L"OРO") {
+			if (path.IsEmpty())path = L"Best\\Best.MatrixForm";
+			MatrixForm mf; mf.Load(path); MatrixFormPlayer* p = new MatrixFormPlayer; p->SetMatrixForm(mf); return p;
+		}
 		else if (str == L"Нейросеть")
 			if (path.IsEmpty())return nullptr;
 			else { NeuronWeb nw; nw.Load(path); NeuronWebPlayer* p = new NeuronWebPlayer; p->SetNW(nw); return p; }

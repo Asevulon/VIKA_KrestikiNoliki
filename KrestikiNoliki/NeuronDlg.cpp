@@ -99,7 +99,7 @@ void NeuronDlg::OnTimer(UINT_PTR nIDEvent)
 	// TODO: добавьте свой код обработчика сообщений или вызов стандартного
 	prog.SetPos(t.GetProgress());
 	CString str;
-	str.Format(L"Прогресс %.2f%%", t.GetProgress());
+	str.Format(L"Прогресс %.2f%%, error: %.3f, Выборка: %d", t.GetProgress(), t.Error(), t.size());
 	progtext.SetWindowTextW(str);
 	CDialogEx::OnTimer(nIDEvent);
 }

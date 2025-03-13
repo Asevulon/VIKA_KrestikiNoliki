@@ -48,7 +48,7 @@ BOOL GameDlg::OnInitDialog()
 
 	// TODO:  Добавить дополнительную инициализацию
 	Delay.SetRange(0, 10);
-	Delay.SetPos(1);
+	Delay.SetPos(0);
 
 	GameDrw.parent = GetSafeHwnd();
 	return TRUE;  // return TRUE unless you set the focus to a control

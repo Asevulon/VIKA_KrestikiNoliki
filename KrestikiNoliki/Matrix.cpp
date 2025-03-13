@@ -220,3 +220,13 @@ CString Matrix2d::ToStringData()
 	return res;
 }
 
+int Matrix2d::GetRows()
+{
+	return rows;
+}
+
+int Matrix2d::GetColumns()
+{
+	return columns;
+}
+
